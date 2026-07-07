@@ -1,0 +1,130 @@
+# 🌐 Subnet Mask & Subnetting
+
+<p align="center">
+  <img alt="Networking" src="https://img.shields.io/badge/Topic-Networking-blue">
+  <img alt="Level" src="https://img.shields.io/badge/Level-Beginner-brightgreen">
+  <img alt="Cloud" src="https://img.shields.io/badge/Cloud-AWS-orange">
+  <img alt="Language" src="https://img.shields.io/badge/Language-English-lightgrey">
+</p>
+
+> A simplified, illustrated summary of Subnet Masks and Subnetting — from core theory to a real AWS example.
+
+---
+
+## 📑 Table of Contents
+
+- [1️⃣ Simple Explanation](#1️⃣-simple-explanation)
+- [2️⃣ Everyday Analogy](#2️⃣-everyday-analogy)
+- [3️⃣ Diagram](#3️⃣-diagram)
+- [4️⃣ Real-World AWS Example](#4️⃣-real-world-aws-example)
+- [5️⃣ Common Mistakes](#5️⃣-common-mistakes)
+- [📝 Quick Summary](#-quick-summary)
+- [📚 Further Reading](#-further-reading)
+
+---
+
+## 1️⃣ Simple Explanation
+
+Imagine you have a large network (say, 1000 devices). If all the devices sit on the same big network, it turns into chaos: tons of data spreads everywhere (**Broadcast**), and it becomes hard to organize and secure the devices.
+
+**Subnetting** is the process of splitting a large network into smaller sub-networks (**Subnets**), each acting as its own independent unit.
+
+The **Subnet Mask** is the tool that determines:
+
+- Which part of the IP is the **"Network" number**
+- And which part is the **"Host" number**
+
+> Example: `255.255.255.0` is a very common Subnet Mask, meaning: the first 3 octets = the network number, the last octet = the host number.
+
+---
+
+## 2️⃣ Everyday Analogy
+
+Think of a large building with 1000 people living in it.
+
+If everyone lived on the same "open floor" with no rooms dividing anything up... total chaos. It'd be hard to deliver a message to one specific person, and any building-wide announcement (**Broadcast**) would reach all 1000 people at once!
+
+**Subnetting = dividing the building into floors and apartments:**
+
+- 🏢 The floor → the **Subnet**
+- 🚪 The apartment number → the **Host**
+- 🧑‍✈️ The building's doorman (Router) knows exactly which floor and apartment to route any message to, without bothering everyone else
+
+---
+
+## 3️⃣ Diagram
+
+```
+IP Address:    192   .   168   .    1    .    10
+Binary:     11000000.10101000.00000001.00001010
+
+Subnet Mask:   255   .   255   .   255  .    0
+Binary:     11111111.11111111.11111111.00000000
+                  |________________|  |________|
+                   Network Part        Host Part
+
+This means:
+- Network = 192.168.1.0
+- Usable devices within it = 192.168.1.1 through 192.168.1.254
+- The last part (Host) is what changes for each device
+```
+
+---
+
+## 4️⃣ Real-World AWS Example
+
+When you create a **VPC** (Virtual Private Cloud) in AWS, the first thing you define is its **CIDR Block** (a compact way of writing the network + subnet mask together), for example:
+
+```
+VPC CIDR: 10.0.0.0/16
+```
+
+The `/16` here means: the first 16 bits (i.e. the first two octets) represent the network number, and the remaining 16 bits are for the hosts.
+
+Then, inside that VPC, you split it into smaller Subnets, for example:
+
+- `10.0.1.0/24` → Subnet for public-facing servers (**Public Subnet**)
+- `10.0.2.0/24` → Subnet for the database (**Private Subnet**)
+
+```
+              VPC: 10.0.0.0/16
+                     |
+        +------------+------------+
+        |                         |
+ 10.0.1.0/24               10.0.2.0/24
+ Public Subnet             Private Subnet
+ (web servers)             (database)
+```
+
+> This lets you separate the different parts of your application for security and organizational reasons.
+
+---
+
+## 5️⃣ Common Mistakes
+
+- ❌ Confusing `/24` with `255.255.255.0` — these are exactly the same thing, just two different notations (CIDR vs. the traditional Subnet Mask).
+- ❌ Forgetting that the first address in a subnet (like `192.168.1.0`) and the last one (like `192.168.1.255`) are reserved and can't be assigned to a device (the first is the network address itself, the last is the Broadcast address).
+- ❌ Assuming that a bigger number after the `/` (like going from `/24` to `/28`) means a bigger network — **it's the exact opposite!** The bigger the number, the smaller the network (because it takes more bits away from the Host portion).
+
+---
+
+## 📝 Quick Summary
+
+| Concept | In short |
+|---|---|
+| Subnetting | Splitting a large network into smaller, organized sub-networks |
+| Subnet Mask | Determines which part of the IP is Network and which is Host |
+| CIDR Notation | Shorthand for writing the network + mask together, e.g. `/24` |
+| Bigger number after `/` | Smaller network (fewer available devices) |
+
+---
+
+## 📚 Further Reading
+
+- [What Is Subnetting? – Cloudflare](https://www.cloudflare.com/learning/network-layer/what-is-a-subnet/)
+- [VPC and Subnets – AWS Docs](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html)
+- [CIDR Notation Explained](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
+
+---
+
+<p align="center">✍️ Part of a Networking & Cloud Notes series</p>
